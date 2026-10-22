@@ -1,120 +1,169 @@
 <!doctype html>
-<html lang="cs">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta http-equiv="refresh" content="300">
-  <title>Výloha projektů — Ministerstvo peněz</title>
-  <style>
-    :root { color-scheme: light dark; --paper:#f1eadb; --card:#fffaf0; --ink:#292824; --muted:#666158; --brick:#9d4638; --line:#d5c9b5; --soft:#e7ddca; }
-    @media (prefers-color-scheme: dark) { :root { --paper:#252522; --card:#302f2a; --ink:#f2ecdf; --muted:#c0b8aa; --brick:#e38b76; --line:#514e46; --soft:#3d3a33; } }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
-    a { color:var(--brick); }
-    a:focus-visible, button:focus-visible, select:focus-visible, summary:focus-visible { outline:3px solid var(--brick); outline-offset:3px; }
-    .wrap { width:min(100% - 32px, 1040px); margin:0 auto; }
-    header { border-bottom:1px solid var(--line); padding:22px 0; }
-    .topline { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-    .wordmark { font-weight:750; letter-spacing:.04em; }
-    h1,h2,h3,p { margin-top:0; } h1 { font-family:Georgia,serif; font-weight:500; font-size:clamp(2rem,6vw,3.2rem); line-height:1.05; margin:34px 0 10px; }
-    h2 { font-family:Georgia,serif; font-size:1.7rem; font-weight:500; margin-bottom:8px; }
-    .intro { max-width:700px; color:var(--muted); margin-bottom:28px; }
-    .button-link { display:inline-block; background:var(--brick); color:#fffaf0; border-radius:5px; padding:10px 15px; text-decoration:none; font-weight:650; }
-    .disabled { opacity:.7; }
-    main { padding:26px 0 60px; }
-    section { margin:0 0 46px; }
-    .section-head { display:flex; justify-content:space-between; align-items:end; gap:20px; flex-wrap:wrap; margin-bottom:16px; }
-    .section-head p { margin:0; color:var(--muted); }
-    .filters { display:flex; gap:10px; flex-wrap:wrap; }
-    label { display:grid; gap:4px; color:var(--muted); font-size:.83rem; }
-    select { min-width:145px; max-width:100%; background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:4px; padding:8px 30px 8px 9px; font:inherit; }
-    .project-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:12px; }
-    .project-card { min-width:0; border:1px solid var(--line); border-top:4px solid var(--brick); background:var(--card); border-radius:5px; }
-    .project-detail summary { list-style:none; cursor:pointer; padding:16px; display:grid; gap:7px; }
-    .project-detail summary::-webkit-details-marker { display:none; }
-    .project-title { font-weight:750; font-size:1.1rem; overflow-wrap:anywhere; }
-    .project-summary { color:var(--muted); overflow-wrap:anywhere; }
-    .project-meta,.date { color:var(--muted); font-size:.85rem; }
-    .detail-body { border-top:1px solid var(--line); padding:14px 16px 16px; overflow-wrap:anywhere; }
-    .detail-body p:last-of-type { margin-bottom:8px; }
-    .empty-state { border:1px dashed var(--line); padding:24px; border-radius:5px; color:var(--muted); background:var(--card); }
-    .ministry { border:1px solid var(--line); border-radius:6px; background:var(--card); overflow:hidden; }
-    .campus { display:block; width:100%; max-height:390px; object-fit:cover; background:var(--soft); }
-    .campus-caption { padding:12px 16px 0; color:var(--muted); font-size:.9rem; }
-    .institutions { list-style:none; padding:0 16px 12px; margin:0; }
-    .institution { border-top:1px solid var(--line); padding:13px 0; }
-    .institution > div { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
-    .institution p { color:var(--muted); margin:4px 0 0; }
-    .institution-status { color:var(--muted); font-size:.86rem; } .ready .institution-status { color:var(--brick); font-weight:700; }
-    .chronicle { list-style:none; border-left:2px solid var(--line); margin:18px 0 0 7px; padding:0 0 0 20px; }
-    .chronicle li { position:relative; margin:0 0 18px; } .chronicle li::before { content:""; width:10px; height:10px; position:absolute; left:-26px; top:7px; background:var(--brick); border-radius:50%; }
-    time,.muted { color:var(--muted); font-size:.88rem; } .chronicle p { margin:2px 0 0; }
-    footer { border-top:1px solid var(--line); padding:16px 0 30px; color:var(--muted); font-size:.85rem; }
-    .map { position:relative; }
-    .spot { position:absolute; border:2px solid transparent; border-radius:6px; background:transparent; cursor:pointer; padding:0; font:inherit; }
-    .spot.waiting { background:rgba(241,234,219,.55); border-color:var(--line); }
-    .spot.ready { border-color:#d9742b; }
-    .spot:hover, .spot:focus-visible { border-color:var(--brick); outline:none; }
-    .spot-chip { position:absolute; left:4px; bottom:4px; background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-size:.75rem; font-weight:650; }
-    .spot-info { margin:10px 16px 0; min-height:3em; color:var(--ink); }
-    body.board { font-size:22px; } body.board .filters, body.board footer, body.board .button-link { display:none; }
-    body.board .project-grid { grid-template-columns:repeat(3,1fr); } body.board .intro { max-width:none; }
-    [hidden] { display:none !important; }
-    @media (max-width:380px) { .wrap { width:min(100% - 22px,1040px); } .section-head { align-items:start; } select { min-width:0; width:100%; } .filters { width:100%; } .filters label { flex:1 1 130px; } }
-  </style>
-</head>
-<body class="board">
-  <header><div class="wrap topline"><div class="wordmark">MINISTERSTVO PENĚZ · Ministerstvo peněz</div><a class="button-link" href="https://discord.com/channels/1562808748165038153/1562882304832184391/1562932259508715691" target="_blank" rel="noopener noreferrer">Otevřít Discord</a></div></header>
-  <main class="wrap">
-    <h1>Veřejná výloha projektů</h1>
-    <p class="intro">Ukázky práce, na kterých týmy právě pracují. Rozbalte projekt pro poslední veřejný výsledek a další krok. Návrat k práci a domluva probíhají v Discordu.</p>
-    <section aria-labelledby="projects-heading">
-      <div class="section-head"><div><h2 id="projects-heading">Projekty</h2><p>Veřejné ukázky sdílené týmy.</p></div>
-        <div class="filters">
-          <label>Typ projektu<select id="filter-kind"><option value="">Všechny typy</option></select></label>
-          <label>Fáze<select id="filter-phase"><option value="">Všechny fáze</option></select></label>
-        </div>
-      </div>
-      <div id="project-list" class="project-grid"><p class="empty-state">Týmy teprve vybírají veřejné ukázky svých projektů.</p></div>
-      <p id="no-filter-results" class="empty-state" hidden>Pro tento výběr tu není žádný projekt.</p>
-    </section>
-    <section aria-labelledby="ministry-heading">
-      <h2 id="ministry-heading">Společná budova</h2>
-      <p class="intro">Instituce se otevírají podle potřeb projektů a dostupné podpory.</p>
-      <div class="ministry"><div class="map"><img class="campus" src="ministry-campus.webp" alt="Ilustrace školní budovy ministerstva" onerror="this.hidden=true"><button type="button" class="spot waiting" data-name="Společné testování" data-reason="Chybí 3× veřejná ukázka. Dřív není co zkoušet." data-state="Zamčeno" aria-label="Společné testování: Zamčeno" style="left:12.5%;top:12.5%;width:25%;height:31%"><span class="spot-chip">🔒 Společné testování</span></button><button type="button" class="spot waiting" data-name="Tržiště zakázek" data-reason="Chybí 3× projekt s plánem. Chybí 1× ověřený výdělek. Pak má tržiště z čeho vybírat." data-state="Zamčeno" aria-label="Tržiště zakázek: Zamčeno" style="left:4.8%;top:45%;width:28%;height:32%"><span class="spot-chip">🔒 Tržiště zakázek</span></button><button type="button" class="spot waiting" data-name="Herní burza" data-reason="Chybí 8× aktivní firma. Chybí 3× ověřený výdělek. Bez toho by burza byla prázdná hra." data-state="Zamčeno" aria-label="Herní burza: Zamčeno" style="left:72.5%;top:38%;width:23.5%;height:25%"><span class="spot-chip">🔒 Herní burza</span></button><button type="button" class="spot waiting" data-name="Herní fondy" data-reason="Nejdřív musí fungovat burza." data-state="Zamčeno" aria-label="Herní fondy: Zamčeno" style="left:60%;top:60.5%;width:25%;height:24.5%"><span class="spot-chip">🔒 Herní fondy</span></button></div><p id="spot-info" class="spot-info" aria-live="polite">Klikni na budovu a uvidíš, jestli je otevřená a co jí chybí.</p><p class="campus-caption">Ministerstvo peněz · SPŠ Kladno</p><ul class="institutions"><li class="institution waiting"><div><strong>Společné testování</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Chybí 3× veřejná ukázka. Dřív není co zkoušet.</p></li>
-<li class="institution waiting"><div><strong>Tržiště zakázek</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Chybí 3× projekt s plánem. Chybí 1× ověřený výdělek. Pak má tržiště z čeho vybírat.</p></li>
-<li class="institution waiting"><div><strong>Herní burza</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Chybí 8× aktivní firma. Chybí 3× ověřený výdělek. Bez toho by burza byla prázdná hra.</p></li>
-<li class="institution waiting"><div><strong>Herní fondy</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Nejdřív musí fungovat burza.</p></li></ul></div>
-    </section>
-    <section aria-labelledby="chronicle-heading"><h2 id="chronicle-heading">Kronika</h2><ul class="chronicle"><li><time></time><p>Ministerstvo bylo založeno. Ekonomika zatím nedorazila.</p></li>
-<li><time>22. 10. 2026</time><p>První tým si založil projekt.</p></li></ul></section>
-  </main>
-  <footer><div class="wrap">Aktualizováno: 2026-10-22T22:00:58Z</div></footer>
-  <script>
-    (() => {
-      const kind = document.getElementById('filter-kind');
-      const phase = document.getElementById('filter-phase');
-      const cards = Array.from(document.querySelectorAll('.project-card'));
-      const empty = document.getElementById('no-filter-results');
-      const apply = () => {
-        let shown = 0;
-        for (const card of cards) {
-          const visible = (!kind.value || card.dataset.kind === kind.value) && (!phase.value || card.dataset.phase === phase.value);
-          card.hidden = !visible;
-          if (visible) shown += 1;
-        }
-        empty.hidden = shown !== 0 || cards.length === 0;
-      };
-      const info = document.getElementById('spot-info');
-      for (const spot of document.querySelectorAll('.spot')) {
-        spot.addEventListener('click', () => {
-          info.textContent = spot.dataset.name + ' · ' + spot.dataset.state + ' — ' + spot.dataset.reason;
-        });
-      }
-      kind.addEventListener('change', apply);
-      phase.addEventListener('change', apply);
-    })();
-  </script>
-</body>
-</html>
+<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark"><meta http-equiv="refresh" content="300"><title>Nástěnka — Ministerstvo peněz</title>
+<style>
+:root {
+  color-scheme: dark;
+  --paper:#151a18; --sheet:#1c2320; --raised:#242d28; --ink:#e8ede7;
+  --muted:#a8b3a9; --subtle:#849287; --line:#36423b; --accent:#d7eb9c;
+  --green:#b9d9b4; --wash:#253329; --warm:#d8b59b;
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit}button,a,input,select,summary{-webkit-tap-highlight-color:transparent}
+a{color:var(--accent);text-underline-offset:4px}a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
+::selection{background:#52633b;color:#fff}[hidden]{display:none!important}
+h1,h2,h3,p{margin-top:0}h1,h2,h3{line-height:1.15;letter-spacing:-.035em}
+h1{font-size:64px;font-weight:650}h2{font-size:27px;font-weight:600}h3{font-size:17px;font-weight:600}p{margin-bottom:16px}
+.wrap{width:min(100% - 88px,1320px);margin-inline:auto}
+.eyebrow,.section-label{font:10px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.section-label{display:flex;align-items:center;gap:9px}.section-label::before{content:'';width:5px;height:5px;background:var(--accent)}
+.muted{color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;top:-100px;left:20px;background:var(--accent);color:var(--paper);z-index:10;padding:10px}.skip:focus{top:10px}
+.masthead{border-bottom:1px solid var(--line);background:var(--paper)}
+.masthead-inner{min-height:88px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:13px;min-width:0;color:var(--ink);text-decoration:none}
+.monogram{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border:1px solid #81986d;border-radius:8px;color:var(--accent);font:600 15px/1 var(--mono);letter-spacing:-1.5px}
+.brand-name{font-size:13px;letter-spacing:.025em;font-weight:650;line-height:1.4}
+.brand-name small{display:block;font:9px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;color:var(--muted)}
+.button-link{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:10px 16px;background:var(--accent);border:1px solid var(--accent);color:#1e291b;text-decoration:none;font-size:12px;font-weight:700;border-radius:5px;white-space:nowrap}
+.button-link::after{content:'↗';font-size:17px;line-height:1}.button-link:hover{background:#e2f1bb;border-color:#e2f1bb}
+.disabled{background:transparent;border-color:var(--line);color:var(--muted)}.disabled::after{content:none}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px}.section-head h2{margin-bottom:5px}.section-head p{color:var(--muted);font-size:12px;margin:0}
+.text-link{display:inline-flex;align-items:center;gap:12px;font-size:12px;font-weight:600;text-decoration:none}.text-link::after{content:'↗'}
+.text-link:hover{text-decoration:underline}.empty-state{color:var(--muted);padding:24px 0}
+.site-footer{margin-top:52px;border-top:1px solid var(--line);padding:24px 0 30px}.footer-inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:10px/1.7 var(--mono);color:var(--muted)}.footer-inner strong{font-weight:400;color:var(--ink)}
+@media(max-width:760px){.wrap{width:calc(100% - 36px)}.masthead-inner{min-height:78px;gap:12px}.brand{gap:10px}.brand-name{font-size:11px}.brand-name small{font-size:8px;letter-spacing:.02em}.monogram{width:34px;height:36px;font-size:13px}.button-link{font-size:11px;padding:9px 11px;gap:10px}.section-head{align-items:flex-start;flex-direction:column;gap:16px}h2{font-size:24px}}
+@media(max-width:360px){.brand-name small{display:none}.brand-name{font-size:10px}.masthead-inner{gap:8px}.button-link{padding:9px;gap:8px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+@media print{
+ :root{color-scheme:light;--paper:#fff;--sheet:#fff;--raised:#f0f2ed;--ink:#172018;--muted:#515e53;--subtle:#515e53;--line:#c8cfc6;--accent:#375b2e;--green:#375b2e;--wash:#edf1e7;--warm:#79513b}
+ body{background:#fff;color:var(--ink)}.wrap{width:100%}.skip,.no-print{display:none!important}.masthead-inner{min-height:65px}.site-footer{margin-top:24px}a{color:inherit}h1,h2,h3{break-after:avoid}
+}
+
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:35px;align-items:end;padding:40px 0 32px}
+.hero h1{font-size:clamp(44px,5.2vw,74px);line-height:1.04;letter-spacing:-.055em;margin:14px 0 16px;font-weight:600}
+.hero h1 span{color:var(--accent)}.hero .intro{max-width:560px;color:var(--muted);font-size:14px;margin:0}
+.edition{display:grid;grid-template-columns:auto 130px;gap:15px;align-items:center;padding:0 0 5px 30px;border-left:1px solid var(--line)}
+.edition-number{font:400 58px/1 var(--mono);letter-spacing:-.06em;color:var(--accent)}.edition-label{font-size:11px;line-height:1.7;color:var(--muted)}.edition-label strong{display:block;font-weight:500;color:var(--ink)}
+.jumpnav{display:flex;gap:28px;align-items:center;border-bottom:1px solid var(--line);margin:0 0 28px;padding:0;overflow-x:auto}
+.jumpnav a{display:block;padding:14px 0;color:var(--muted);font-size:12px;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap}.jumpnav a:first-child{color:var(--ink);border-color:var(--accent)}.jumpnav a:hover{color:var(--accent)}.jumpnav span{margin-right:7px;font:9px var(--mono);color:var(--subtle)}.jumpnav .nav-note{margin-left:auto;padding-bottom:3px;font:9px/1.5 var(--mono);color:var(--subtle);white-space:nowrap}
+.projects-section{margin-bottom:56px}.section-count{font:11px var(--mono);color:var(--muted);letter-spacing:0;vertical-align:middle;margin-left:9px}.filters{display:flex;gap:10px}.filters label{display:grid;gap:5px;font:9px/1.5 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--subtle)}.filters select{min-width:145px;max-width:230px;padding:8px 30px 8px 10px;background:var(--sheet);border:1px solid var(--line);color:var(--ink);border-radius:5px;font:12px/1.5 var(--sans);letter-spacing:0;text-transform:none}
+.project-columns{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr) minmax(0,.85fr);gap:32px;padding:11px 24px;border:1px solid var(--line);border-bottom:0;border-radius:7px 7px 0 0;background:var(--sheet);font:9px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--subtle)}
+.project-grid{border:1px solid var(--line);border-radius:0 0 7px 7px;overflow:hidden;background:var(--sheet)}
+.project-card{position:relative;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr) minmax(0,.85fr);gap:32px;padding:25px 24px;border-bottom:1px solid var(--line);min-width:0;align-items:start}
+.project-card:last-child{border-bottom:0}.project-card:hover{background:#202923}.project-identity{min-width:0}.project-kicker{display:flex;align-items:center;gap:9px;margin:0 0 12px;min-width:0}.project-number{font:10px var(--mono);color:var(--subtle)}.project-kind{font:9px/1.7 var(--mono);padding:2px 7px;color:var(--muted);border:1px solid var(--line);border-radius:3px;overflow-wrap:anywhere;min-width:0}
+.project-title{font-size:25px;font-weight:600;line-height:1.12;letter-spacing:-.04em;margin:0 0 10px;overflow-wrap:anywhere}.project-summary{font-size:12px;color:var(--muted);line-height:1.65;margin:0 0 12px;overflow-wrap:anywhere}.project-phase{display:inline-flex;align-items:baseline;gap:7px;font-size:10px;color:var(--warm);overflow-wrap:anywhere}.project-phase::before{content:'';width:4px;height:4px;background:var(--warm);border-radius:50%;flex-shrink:0}
+.project-work{min-width:0}.detail-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;font:9px/1.6 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--subtle);margin-bottom:9px}.project-result,.project-next{font-size:14px;line-height:1.75;color:var(--ink);margin:0;white-space:pre-line;overflow-wrap:anywhere}.project-next{color:#c5d9af}.next-arrow{font-size:15px;color:var(--accent);margin-right:8px}
+.date{display:block;font:9px/1.6 var(--mono);color:var(--subtle);margin-top:15px}.project-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px;min-height:18px}.read-more{cursor:pointer;padding:0 0 2px;background:none;border:0;border-bottom:1px dotted var(--subtle);color:var(--muted);font-size:11px}.read-more:hover{color:var(--ink)}
+.js .project-card:not(.expanded) .project-result,.js .project-card:not(.expanded) .project-next{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+.empty-projects{padding:40px 28px;display:grid;grid-template-columns:48px minmax(0,1fr);gap:22px}.empty-symbol{width:43px;height:43px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;font:24px var(--mono);color:var(--accent)}.empty-projects h3{font-size:24px;font-weight:500;margin-bottom:13px;letter-spacing:-.03em}.empty-projects p{font-size:13px;max-width:520px;color:var(--muted);margin-bottom:8px}.empty-projects .empty-note{font:10px/1.8 var(--mono);margin-top:18px;color:var(--subtle)}
+.ministry-section{border-top:1px solid var(--line);padding-top:28px;margin-bottom:48px}.ministry-heading{display:flex;justify-content:space-between;gap:30px;align-items:end;margin:10px 0 24px}.ministry-heading h2{font-size:32px;font-weight:500;margin:0}.ministry-heading p{max-width:395px;color:var(--muted);font-size:12px;margin:0}
+.ministry{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--sheet)}
+.campus-panel{min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line);background:#272d27}.map{position:relative;margin:auto 0;background:#d7d5c3}.campus{display:block;width:100%;height:auto;aspect-ratio:1344/752;object-fit:contain;filter:brightness(.77) saturate(.55)}
+.campus-caption{display:flex;justify-content:space-between;gap:16px;padding:15px 18px;margin:0;font:9px/1.6 var(--mono);color:var(--muted);border-top:1px solid var(--line)}
+.spot{position:absolute;border:1px dashed #202e2670;border-radius:3px;background:transparent;cursor:pointer;padding:0}.spot.ready{border:1px solid #304c31}.spot:hover,.spot[aria-pressed=true]{border:2px solid #263e25;background:#263f1c12}.spot-chip{position:absolute;left:4px;bottom:4px;width:25px;height:25px;border-radius:4px;background:#243027;color:#d7eb9c;border:1px solid #51634b;display:grid;place-items:center;font:10px/1 var(--mono)}.spot.ready .spot-chip{background:#d7eb9c;color:#243027;border-color:#243027}.spot[aria-pressed=true] .spot-chip{box-shadow:0 0 0 2px #e5edcf}
+.ministry-notes{padding:0 22px 20px;min-width:0}.institutions{list-style:none;margin:0;padding:0}.institution{position:relative;padding:17px 0;border-bottom:1px solid var(--line)}.institution>div{display:flex;align-items:baseline;gap:12px}.institution-number{font:10px var(--mono);color:var(--subtle)}.institution strong{font-size:13px;font-weight:500}.institution-status{display:block;margin:6px 0 0 27px;font:9px/1.7 var(--mono);color:var(--subtle)}.ready .institution-status{color:var(--accent)}.institution p{margin:7px 0 0 27px;font-size:11px;line-height:1.75;color:var(--muted);overflow-wrap:anywhere}.institution.selected{padding-left:12px;box-shadow:inset 2px 0 var(--accent)}.spot-info{padding:12px 14px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:11px;margin:18px 0 0}.map-unavailable{grid-template-columns:1fr}
+.chronicle-section{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:35px;padding-top:26px;border-top:1px solid var(--line)}.chronicle-section h2{font-size:30px;font-weight:500;margin:11px 0}.chronicle-section>.chronicle-intro>p{font-size:12px;color:var(--muted);max-width:220px}.chronicle{list-style:none;margin:0;padding:0}.chronicle li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:24px;padding:15px 0;border-bottom:1px solid var(--line)}.chronicle time{font:9px/1.8 var(--mono);color:var(--subtle)}.chronicle p{font-size:12px;margin:0;overflow-wrap:anywhere}
+.board .wrap{max-width:1800px;width:calc(100% - 64px)}.board .masthead-inner{min-height:80px}.board .hero{padding:28px 0 26px}.board .hero h1{font-size:50px;margin:10px 0}.board .hero .intro{font-size:13px;max-width:none}.board .edition-number{font-size:48px}.board .jumpnav,.board .filters,.board .site-footer,.board .button-link,.board .project-columns,.board .project-summary,.board .project-actions,.board .chronicle-section,.board .ministry-section>.section-label{display:none}.board .projects-section{margin-bottom:28px}.board .section-head{margin-bottom:18px}.board .section-head h2{font-size:21px}.board .section-head p{display:none}.board .project-grid{border:0;border-radius:0;background:transparent;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:18px;overflow:visible}.board .project-card{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:7px;padding:24px;background:var(--sheet);align-items:stretch}.board .project-identity{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:18px}.board .project-title{font-size:30px;margin-bottom:12px}.board .project-kicker{margin-bottom:16px}.board .project-phase{font-size:11px}.board .project-kind{font-size:10px}.board .project-work{margin-bottom:22px}.board .project-work:last-child{margin-bottom:0;padding-top:18px;border-top:1px solid var(--line)}.board .detail-label{display:block;position:static;width:auto;height:auto;padding:0;margin:0 0 9px;overflow:visible;clip:auto;white-space:normal;font-size:10px}.board .project-result,.board .project-next{display:block!important;overflow:visible!important;-webkit-line-clamp:unset!important;font-size:18px;line-height:1.65}.board .date{font-size:10px}.board .ministry-heading{margin:0 0 18px}.board .ministry-heading h2{font-size:23px}.board .ministry-heading p{font-size:11px}.board .ministry-section{padding-top:22px;margin-bottom:25px}.board .ministry{display:block}.board .campus-panel,.board .spot-info{display:none}.board .ministry-notes{padding-bottom:0}.board .institutions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.board .institution{border-bottom:0}.board .institution p{font-size:10px}
+
+@media(max-width:1050px){.project-card,.project-columns{gap:22px;padding-inline:20px}.project-title{font-size:22px}.ministry{grid-template-columns:1fr 1fr}.board .institutions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+ .hero{padding:28px 0 24px;grid-template-columns:1fr;gap:23px}.hero h1{font-size:48px;margin-top:12px}.hero .intro{font-size:13px}.edition{border-left:0;border-top:1px solid var(--line);padding:18px 0 0;grid-template-columns:auto 1fr;gap:16px}.edition-number{font-size:35px}.edition-label{font-size:10px}.edition-label strong{display:inline;margin-right:4px}.jumpnav{gap:23px;margin-bottom:25px}.jumpnav .nav-note{display:none}.jumpnav a{font-size:11px;padding-block:12px}.jumpnav span{font-size:8px;margin-right:5px}
+ .filters{width:100%}.filters label{min-width:0;flex:1}.filters select{width:100%;min-width:0;max-width:none}.project-columns{display:none}.project-grid{border-radius:7px}.project-card{display:block;padding:23px 20px}.project-identity{padding-bottom:20px}.project-title{font-size:28px}.project-summary{font-size:12px;max-width:none}.project-work{margin-top:20px}.project-identity + .project-work{border-top:1px solid var(--line);padding-top:18px}.detail-label{display:block;position:static;width:auto;height:auto;padding:0;margin:0 0 9px;overflow:visible;clip:auto;white-space:normal}.project-result,.project-next{font-size:13px}.date{margin-top:12px}.project-actions{margin-top:15px}.js .project-card:not(.expanded) .project-result,.js .project-card:not(.expanded) .project-next{-webkit-line-clamp:4}
+ .empty-projects{grid-template-columns:1fr;padding:28px 22px;gap:18px}.empty-projects h3{font-size:23px}.projects-section{margin-bottom:40px}.ministry-heading{display:block}.ministry-heading h2{font-size:28px;margin-bottom:14px}.ministry-heading p{font-size:12px}.ministry{grid-template-columns:1fr}.campus-panel{border-right:0;border-bottom:1px solid var(--line)}.ministry-notes{padding-inline:18px}.campus-caption{font-size:8px;padding-inline:13px}.spot-chip{width:21px;height:21px;left:2px;bottom:2px;font-size:9px}.chronicle-section{grid-template-columns:1fr;gap:10px}.chronicle-section>.chronicle-intro>p{max-width:none}.chronicle li{grid-template-columns:80px minmax(0,1fr);gap:16px}.chronicle-section h2{font-size:28px}.board .wrap{width:calc(100% - 36px)}.board .hero h1{font-size:42px}.board .edition{display:none}.board .project-grid{grid-template-columns:1fr}.board .institutions{grid-template-columns:1fr}.board .project-card{padding:22px}.board .ministry-heading{display:block}
+}
+@media print{.hero{padding-block:24px}.hero h1{font-size:38px}.jumpnav,.filters,.read-more,.spot-info{display:none}.project-card{break-inside:avoid;background:white!important}.project-result,.project-next{display:block!important;overflow:visible!important;-webkit-line-clamp:unset!important;color:var(--ink)}.project-card,.project-columns{padding-inline:12px;gap:20px}.ministry{display:block}.campus-panel{border:0}.campus{filter:none;max-height:250px}.board .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.board .project-card{background:white}.board .project-result,.board .project-next{font-size:12px}}
+</style></head><body class="board">
+<a class="skip" href="#projects-heading">Přejít na projekty</a>
+<header class="masthead"><div class="wrap masthead-inner"><div class="brand"><span class="monogram" aria-hidden="true">MP</span><span class="brand-name">MINISTERSTVO PENĚZ<small>Studentské projekty / SPŠ a VOŠ Kladno</small></span></div><a class="button-link" href="https://discord.com/channels/1562808748165038153/1562882304832184391/1562932259508715691" target="_blank" rel="noopener noreferrer">Do Discordu</a></div></header>
+<main class="wrap">
+  <div class="hero"><div><span class="section-label">Veřejná nástěnka / SPŠ Kladno</span><h1>Dneska v dílnách<span>.</span></h1>
+    <p class="intro">Někdo staví hru. Někdo shání první zakázku. Tady je vidět, co vzniká — a co přijde dál.</p></div>
+    <aside class="edition" aria-label="Počet veřejných projektů"><span class="edition-number">00</span><span class="edition-label"><strong>veřejných projektů</strong>od nápadu k vlastnímu podnikání</span></aside>
+  </div>
+  <nav class="jumpnav" aria-label="Na stránce"><a href="#projects-heading"><span>01</span>Projekty</a><a href="#ministry-heading"><span>02</span>Ministerstvo</a><a href="#chronicle-heading"><span>03</span>Kronika</a><span class="nav-note">Výstupy vybrané týmy · Ministerstvo peněz</span></nav>
+  <section class="projects-section" aria-labelledby="projects-heading"><div class="section-head"><div><h2 id="projects-heading">Rozpracováno <span class="section-count">/ 00</span></h2><p>Každý projekt má vlastní tempo. Tady je jeho poslední veřejný posun.</p></div></div>
+    <div id="project-list" class="project-grid">
+      <div class="empty-projects"><span class="empty-symbol" aria-hidden="true">↗</span><div>
+        <h3>První ukázka má místo tady.</h3>
+        <p>Týmy teprve vybírají veřejné ukázky svých projektů.</p>
+        <p>Pracuješ na něčem? V Discordu otevři svůj projekt a vyber výsledek, který chceš ukázat ostatním.</p>
+        <p class="empty-note">Na web se dostane až to, co tým potvrdí ke zveřejnění.</p>
+      </div></div></div><p id="no-filter-results" class="empty-state" role="status" hidden>Pro tento výběr tu není žádný projekt.</p>
+  </section>
+  <section class="ministry-section" aria-labelledby="ministry-heading"><span class="section-label">Společná stavba</span><div class="ministry-heading"><h2 id="ministry-heading">Co si odemkneme dál.</h2><p>Čím dál jsou projekty, tím víc možností dává smysl. Tohle ministerstvo roste podle toho, co společně potřebujeme.</p></div>
+    <div class="ministry"><div class="campus-panel"><div class="map"><img class="campus" src="ministry-campus.webp" width="1344" height="752" loading="lazy" alt="Ilustrovaná školní budova ministerstva s dílnou a základy dalších přístaveb"><button type="button" class="spot waiting" data-name="Společné testování" data-reason="Chybí 3× veřejná ukázka s odkazem. Dřív není co zkoušet." data-state="Zamčeno" data-status="Připravuje se" data-target="institution-1" aria-label="Společné testování: Připravuje se" aria-pressed="false" aria-controls="spot-info institution-1" style="left:12.5%;top:12.5%;width:25%;height:31%"><span class="spot-chip" aria-hidden="true">01</span></button><button type="button" class="spot waiting" data-name="Tržiště zakázek" data-reason="Chybí 3× projekt s plánem. Chybí 1× ověřený výdělek. Pak má tržiště z čeho vybírat." data-state="Zamčeno" data-status="Připravuje se" data-target="institution-2" aria-label="Tržiště zakázek: Připravuje se" aria-pressed="false" aria-controls="spot-info institution-2" style="left:4.8%;top:45%;width:28%;height:32%"><span class="spot-chip" aria-hidden="true">02</span></button><button type="button" class="spot waiting" data-name="Herní burza" data-reason="Chybí 8× tým se zápisy ve dvou týdnech za posledních 28 dní. Chybí 3× tým s kladným ověřeným výdělkem. Bez toho by burza byla prázdná hra." data-state="Zamčeno" data-status="Připravuje se" data-target="institution-3" aria-label="Herní burza: Připravuje se" aria-pressed="false" aria-controls="spot-info institution-3" style="left:72.5%;top:38%;width:23.5%;height:25%"><span class="spot-chip" aria-hidden="true">03</span></button><button type="button" class="spot waiting" data-name="Herní fondy" data-reason="Nejdřív musí fungovat burza." data-state="Zamčeno" data-status="Připravuje se" data-target="institution-4" aria-label="Herní fondy: Připravuje se" aria-pressed="false" aria-controls="spot-info institution-4" style="left:60%;top:60.5%;width:25%;height:24.5%"><span class="spot-chip" aria-hidden="true">04</span></button></div><p class="campus-caption"><span>SPŠ Kladno / společná budova</span><span>Stavíme postupně</span></p></div>
+    <div class="ministry-notes"><ul class="institutions"><li id="institution-1" class="institution waiting"><div><span class="institution-number">01</span><strong>Společné testování</strong></div><span class="institution-status">Připravuje se</span><p>Chybí 3× veřejná ukázka s odkazem. Dřív není co zkoušet.</p></li>
+<li id="institution-2" class="institution waiting"><div><span class="institution-number">02</span><strong>Tržiště zakázek</strong></div><span class="institution-status">Připravuje se</span><p>Chybí 3× projekt s plánem. Chybí 1× ověřený výdělek. Pak má tržiště z čeho vybírat.</p></li>
+<li id="institution-3" class="institution waiting"><div><span class="institution-number">03</span><strong>Herní burza</strong></div><span class="institution-status">Připravuje se</span><p>Chybí 8× tým se zápisy ve dvou týdnech za posledních 28 dní. Chybí 3× tým s kladným ověřeným výdělkem. Bez toho by burza byla prázdná hra.</p></li>
+<li id="institution-4" class="institution waiting"><div><span class="institution-number">04</span><strong>Herní fondy</strong></div><span class="institution-status">Připravuje se</span><p>Nejdřív musí fungovat burza.</p></li></ul><p id="spot-info" class="spot-info" aria-live="polite">Vyber číslo na budově. Uvidíš, co už je připravené a co ještě chybí.</p></div></div>
+  </section>
+  <section class="chronicle-section" aria-labelledby="chronicle-heading"><div class="chronicle-intro"><span class="section-label">Už se stalo</span><h2 id="chronicle-heading">Kronika</h2><p>Důležité momenty naší společné stavby.</p></div><ul class="chronicle"><li><time datetime=""></time><p>Ministerstvo bylo založeno. Ekonomika zatím nedorazila.</p></li>
+<li><time datetime="22. 10. 2026">22. 10. 2026</time><p>První tým si založil projekt.</p></li></ul></section>
+</main><footer class="site-footer"><div class="wrap footer-inner"><strong>Ministerstvo peněz / SPŠ a VOŠ Kladno</strong><span>Aktualizováno: <time datetime="2026-10-22T23:16:48Z">23. 10. 2026 · 01:16 CEST</time></span></div></footer>
+<script>
+(() => {
+  document.documentElement.classList.add('js');
+  const kind = document.getElementById('filter-kind');
+  const phase = document.getElementById('filter-phase');
+  const cards = Array.from(document.querySelectorAll('.project-card'));
+  const empty = document.getElementById('no-filter-results');
+  const apply = () => {
+    let shown = 0;
+    for (const card of cards) {
+      const visible = (!kind.value || card.dataset.kind === kind.value) && (!phase.value || card.dataset.phase === phase.value);
+      card.hidden = !visible;
+      if (visible) shown += 1;
+    }
+    empty.hidden = shown !== 0 || cards.length === 0;
+  };
+  const isBoard = document.body.classList.contains('board');
+  const fit = () => {
+    for (const card of cards) {
+      const button = card.querySelector('.read-more');
+      if (isBoard) { button.hidden = true; continue; }
+      const paragraphs = Array.from(card.querySelectorAll('.project-result,.project-next'));
+      const clipped = paragraphs.some(p => p.scrollHeight > p.clientHeight + 2);
+      button.hidden = !card.classList.contains('expanded') && !clipped;
+    }
+  };
+  for (const card of cards) {
+    const button = card.querySelector('.read-more');
+    button.addEventListener('click', () => {
+      const expanded = card.classList.toggle('expanded');
+      button.setAttribute('aria-expanded', String(expanded));
+      button.setAttribute('aria-label', (expanded ? 'Zkrátit zápis projektu ' : 'Celý zápis projektu ') + card.querySelector('.project-title').textContent);
+      button.textContent = expanded ? 'Zkrátit zápis ↑' : 'Celý zápis ↓';
+    });
+  }
+  if (kind && phase) {
+    const filter = () => { apply(); requestAnimationFrame(fit); };
+    kind.addEventListener('change', filter); phase.addEventListener('change', filter);
+  }
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fit).observe(document.documentElement);
+  window.addEventListener('resize', fit);
+  requestAnimationFrame(fit);
+  const info = document.getElementById('spot-info');
+  const spots = Array.from(document.querySelectorAll('.spot'));
+  for (const spot of spots) {
+    spot.addEventListener('click', () => {
+      spots.forEach(other => other.setAttribute('aria-pressed', String(other === spot)));
+      document.querySelectorAll('.institution').forEach(item => item.classList.toggle('selected', item.id === spot.dataset.target));
+      info.textContent = spot.dataset.name + ' · ' + spot.dataset.status + ' — ' + spot.dataset.reason;
+    });
+  }
+  const image = document.querySelector('.campus');
+  const hideMap = () => {
+    if (!image) return;
+    image.closest('.campus-panel').hidden = true;
+    image.closest('.ministry').classList.add('map-unavailable');
+    info.hidden = true;
+  };
+  if (image) { image.addEventListener('error', hideMap); if (image.complete && !image.naturalWidth) hideMap(); }
+})();
+</script></body></html>
