@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="refresh" content="300">
+  <title>Výloha projektů — Ministerstvo peněz</title>
+  <style>
+    :root { color-scheme: light dark; --paper:#f1eadb; --card:#fffaf0; --ink:#292824; --muted:#666158; --brick:#9d4638; --line:#d5c9b5; --soft:#e7ddca; }
+    @media (prefers-color-scheme: dark) { :root { --paper:#252522; --card:#302f2a; --ink:#f2ecdf; --muted:#c0b8aa; --brick:#e38b76; --line:#514e46; --soft:#3d3a33; } }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--brick); }
+    a:focus-visible, button:focus-visible, select:focus-visible, summary:focus-visible { outline:3px solid var(--brick); outline-offset:3px; }
+    .wrap { width:min(100% - 32px, 1040px); margin:0 auto; }
+    header { border-bottom:1px solid var(--line); padding:22px 0; }
+    .topline { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+    .wordmark { font-weight:750; letter-spacing:.04em; }
+    h1,h2,h3,p { margin-top:0; } h1 { font-family:Georgia,serif; font-weight:500; font-size:clamp(2rem,6vw,3.2rem); line-height:1.05; margin:34px 0 10px; }
+    h2 { font-family:Georgia,serif; font-size:1.7rem; font-weight:500; margin-bottom:8px; }
+    .intro { max-width:700px; color:var(--muted); margin-bottom:28px; }
+    .button-link { display:inline-block; background:var(--brick); color:#fffaf0; border-radius:5px; padding:10px 15px; text-decoration:none; font-weight:650; }
+    .disabled { opacity:.7; }
+    main { padding:26px 0 60px; }
+    section { margin:0 0 46px; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:20px; flex-wrap:wrap; margin-bottom:16px; }
+    .section-head p { margin:0; color:var(--muted); }
+    .filters { display:flex; gap:10px; flex-wrap:wrap; }
+    label { display:grid; gap:4px; color:var(--muted); font-size:.83rem; }
+    select { min-width:145px; max-width:100%; background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:4px; padding:8px 30px 8px 9px; font:inherit; }
+    .project-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:12px; }
+    .project-card { min-width:0; border:1px solid var(--line); border-top:4px solid var(--brick); background:var(--card); border-radius:5px; }
+    .project-detail summary { list-style:none; cursor:pointer; padding:16px; display:grid; gap:7px; }
+    .project-detail summary::-webkit-details-marker { display:none; }
+    .project-title { font-weight:750; font-size:1.1rem; overflow-wrap:anywhere; }
+    .project-summary { color:var(--muted); overflow-wrap:anywhere; }
+    .project-meta,.date { color:var(--muted); font-size:.85rem; }
+    .detail-body { border-top:1px solid var(--line); padding:14px 16px 16px; overflow-wrap:anywhere; }
+    .detail-body p:last-of-type { margin-bottom:8px; }
+    .empty-state { border:1px dashed var(--line); padding:24px; border-radius:5px; color:var(--muted); background:var(--card); }
+    .ministry { border:1px solid var(--line); border-radius:6px; background:var(--card); overflow:hidden; }
+    .campus { display:block; width:100%; max-height:390px; object-fit:cover; background:var(--soft); }
+    .campus-caption { padding:12px 16px 0; color:var(--muted); font-size:.9rem; }
+    .institutions { list-style:none; padding:0 16px 12px; margin:0; }
+    .institution { border-top:1px solid var(--line); padding:13px 0; }
+    .institution > div { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+    .institution p { color:var(--muted); margin:4px 0 0; }
+    .institution-status { color:var(--muted); font-size:.86rem; } .ready .institution-status { color:var(--brick); font-weight:700; }
+    .chronicle { list-style:none; border-left:2px solid var(--line); margin:18px 0 0 7px; padding:0 0 0 20px; }
+    .chronicle li { position:relative; margin:0 0 18px; } .chronicle li::before { content:""; width:10px; height:10px; position:absolute; left:-26px; top:7px; background:var(--brick); border-radius:50%; }
+    time,.muted { color:var(--muted); font-size:.88rem; } .chronicle p { margin:2px 0 0; }
+    footer { border-top:1px solid var(--line); padding:16px 0 30px; color:var(--muted); font-size:.85rem; }
+    .map { position:relative; }
+    .spot { position:absolute; border:2px solid transparent; border-radius:6px; background:transparent; cursor:pointer; padding:0; font:inherit; }
+    .spot.waiting { background:rgba(241,234,219,.55); border-color:var(--line); }
+    .spot.ready { border-color:#d9742b; }
+    .spot:hover, .spot:focus-visible { border-color:var(--brick); outline:none; }
+    .spot-chip { position:absolute; left:4px; bottom:4px; background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-size:.75rem; font-weight:650; }
+    .spot-info { margin:10px 16px 0; min-height:3em; color:var(--ink); }
+    body.board { font-size:22px; } body.board .filters, body.board footer, body.board .button-link { display:none; }
+    body.board .project-grid { grid-template-columns:repeat(3,1fr); } body.board .intro { max-width:none; }
+    [hidden] { display:none !important; }
+    @media (max-width:380px) { .wrap { width:min(100% - 22px,1040px); } .section-head { align-items:start; } select { min-width:0; width:100%; } .filters { width:100%; } .filters label { flex:1 1 130px; } }
+  </style>
+</head>
+<body class="board">
+  <header><div class="wrap topline"><div class="wordmark">MINISTERSTVO PENĚZ · Ministerstvo peněz</div><a class="button-link" href="https://discord.com/channels/1562808748165038153/1562882304832184391/1562932259508715691" target="_blank" rel="noopener noreferrer">Otevřít Discord</a></div></header>
+  <main class="wrap">
+    <h1>Veřejná výloha projektů</h1>
+    <p class="intro">Ukázky práce, na kterých týmy právě pracují. Rozbalte projekt pro poslední veřejný výsledek a další krok. Návrat k práci a domluva probíhají v Discordu.</p>
+    <section aria-labelledby="projects-heading">
+      <div class="section-head"><div><h2 id="projects-heading">Projekty</h2><p>Veřejné ukázky sdílené týmy.</p></div>
+        <div class="filters">
+          <label>Typ projektu<select id="filter-kind"><option value="">Všechny typy</option></select></label>
+          <label>Fáze<select id="filter-phase"><option value="">Všechny fáze</option></select></label>
+        </div>
+      </div>
+      <div id="project-list" class="project-grid"><p class="empty-state">Týmy teprve vybírají veřejné ukázky svých projektů.</p></div>
+      <p id="no-filter-results" class="empty-state" hidden>Pro tento výběr tu není žádný projekt.</p>
+    </section>
+    <section aria-labelledby="ministry-heading">
+      <h2 id="ministry-heading">Společná budova</h2>
+      <p class="intro">Instituce se otevírají podle potřeb projektů a dostupné podpory.</p>
+      <div class="ministry"><div class="map"><img class="campus" src="ministry-campus.webp" alt="Ilustrace školní budovy ministerstva" onerror="this.hidden=true"><button type="button" class="spot waiting" data-name="Společné testování" data-reason="Chybí 3× veřejná ukázka. Dřív není co zkoušet." data-state="Zamčeno" aria-label="Společné testování: Zamčeno" style="left:12.5%;top:12.5%;width:25%;height:31%"><span class="spot-chip">🔒 Společné testování</span></button><button type="button" class="spot waiting" data-name="Tržiště zakázek" data-reason="Chybí 3× projekt s plánem. Chybí 1× ověřený výdělek. Pak má tržiště z čeho vybírat." data-state="Zamčeno" aria-label="Tržiště zakázek: Zamčeno" style="left:4.8%;top:45%;width:28%;height:32%"><span class="spot-chip">🔒 Tržiště zakázek</span></button><button type="button" class="spot waiting" data-name="Herní burza" data-reason="Chybí 8× aktivní firma. Chybí 3× ověřený výdělek. Bez toho by burza byla prázdná hra." data-state="Zamčeno" aria-label="Herní burza: Zamčeno" style="left:72.5%;top:38%;width:23.5%;height:25%"><span class="spot-chip">🔒 Herní burza</span></button><button type="button" class="spot waiting" data-name="Herní fondy" data-reason="Nejdřív musí fungovat burza." data-state="Zamčeno" aria-label="Herní fondy: Zamčeno" style="left:60%;top:60.5%;width:25%;height:24.5%"><span class="spot-chip">🔒 Herní fondy</span></button></div><p id="spot-info" class="spot-info" aria-live="polite">Klikni na budovu a uvidíš, jestli je otevřená a co jí chybí.</p><p class="campus-caption">Ministerstvo peněz · SPŠ Kladno</p><ul class="institutions"><li class="institution waiting"><div><strong>Společné testování</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Chybí 3× veřejná ukázka. Dřív není co zkoušet.</p></li>
+<li class="institution waiting"><div><strong>Tržiště zakázek</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Chybí 3× projekt s plánem. Chybí 1× ověřený výdělek. Pak má tržiště z čeho vybírat.</p></li>
+<li class="institution waiting"><div><strong>Herní burza</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Chybí 8× aktivní firma. Chybí 3× ověřený výdělek. Bez toho by burza byla prázdná hra.</p></li>
+<li class="institution waiting"><div><strong>Herní fondy</strong><span class="institution-status">Zatím nepřístupné</span></div><p>Nejdřív musí fungovat burza.</p></li></ul></div>
+    </section>
+    <section aria-labelledby="chronicle-heading"><h2 id="chronicle-heading">Kronika</h2><ul class="chronicle"><li><time></time><p>Ministerstvo bylo založeno. Ekonomika zatím nedorazila.</p></li></ul></section>
+  </main>
+  <footer><div class="wrap">Aktualizováno: 2026-10-22T21:25:37Z</div></footer>
+  <script>
+    (() => {
+      const kind = document.getElementById('filter-kind');
+      const phase = document.getElementById('filter-phase');
+      const cards = Array.from(document.querySelectorAll('.project-card'));
+      const empty = document.getElementById('no-filter-results');
+      const apply = () => {
+        let shown = 0;
+        for (const card of cards) {
+          const visible = (!kind.value || card.dataset.kind === kind.value) && (!phase.value || card.dataset.phase === phase.value);
+          card.hidden = !visible;
+          if (visible) shown += 1;
+        }
+        empty.hidden = shown !== 0 || cards.length === 0;
+      };
+      const info = document.getElementById('spot-info');
+      for (const spot of document.querySelectorAll('.spot')) {
+        spot.addEventListener('click', () => {
+          info.textContent = spot.dataset.name + ' · ' + spot.dataset.state + ' — ' + spot.dataset.reason;
+        });
+      }
+      kind.addEventListener('change', apply);
+      phase.addEventListener('change', apply);
+    })();
+  </script>
+</body>
+</html>
