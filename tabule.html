@@ -86,17 +86,29 @@ h1{font-size:64px;font-weight:650}h2{font-size:27px;font-weight:600}h3{font-size
 <main class="wrap">
   <div class="hero"><div><span class="section-label">Veřejná nástěnka / SPŠ Kladno</span><h1>Dneska v dílnách<span>.</span></h1>
     <p class="intro">Někdo staví hru. Někdo shání první zakázku. Tady je vidět, co vzniká — a co přijde dál.</p></div>
-    <aside class="edition" aria-label="Počet veřejných projektů"><span class="edition-number">00</span><span class="edition-label"><strong>veřejných projektů</strong>od nápadu k vlastnímu podnikání</span></aside>
+    <aside class="edition" aria-label="Počet veřejných projektů"><span class="edition-number">01</span><span class="edition-label"><strong>veřejný projekt</strong>od nápadu k vlastnímu podnikání</span></aside>
   </div>
   <nav class="jumpnav" aria-label="Na stránce"><a href="#projects-heading"><span>01</span>Projekty</a><a href="#ministry-heading"><span>02</span>Ministerstvo</a><a href="#chronicle-heading"><span>03</span>Kronika</a><span class="nav-note">Výstupy vybrané týmy · Ministerstvo peněz</span></nav>
-  <section class="projects-section" aria-labelledby="projects-heading"><div class="section-head"><div><h2 id="projects-heading">Rozpracováno <span class="section-count">/ 00</span></h2><p>Každý projekt má vlastní tempo. Tady je jeho poslední veřejný posun.</p></div></div>
-    <div id="project-list" class="project-grid">
-      <div class="empty-projects"><span class="empty-symbol" aria-hidden="true">↗</span><div>
-        <h3>První ukázka má místo tady.</h3>
-        <p>Týmy teprve vybírají veřejné ukázky svých projektů.</p>
-        <p>Pracuješ na něčem? V Discordu otevři svůj projekt a vyber výsledek, který chceš ukázat ostatním.</p>
-        <p class="empty-note">Na web se dostane až to, co tým potvrdí ke zveřejnění.</p>
-      </div></div></div><p id="no-filter-results" class="empty-state" role="status" hidden>Pro tento výběr tu není žádný projekt.</p>
+  <section class="projects-section" aria-labelledby="projects-heading"><div class="section-head"><div><h2 id="projects-heading">Rozpracováno <span class="section-count">/ 01</span></h2><p>Každý projekt má vlastní tempo. Tady je jeho poslední veřejný posun.</p></div><div class="filters">
+      <label>Typ projektu<select id="filter-kind"><option value="">Všechny typy</option></select></label>
+      <label>Fáze<select id="filter-phase"><option value="">Všechny fáze</option></select></label></div></div>
+    <div class="project-columns" aria-hidden="true"><span>Projekt</span><span>Poslední posun</span><span>Co bude dál →</span></div><div id="project-list" class="project-grid">
+        <article class="project-card" data-kind="" data-phase="">
+          <div class="project-identity">
+            <div class="project-kicker"><span class="project-number">01</span></div>
+            <h3 class="project-title">Hra ze skupiny S2/1</h3>
+            <p class="project-summary">tvoříme 3d modely v blenderu, odevzdávám Vladimírovy Čáchovy</p>
+            
+          </div>
+          <div class="project-work project-update"><span class="detail-label">Poslední posun</span>
+            <p id="project-result-1" class="project-result">naucil jsem se trosku v blenderu a udelal první model do hry, což je meč. via priloha</p>
+            <time class="date" datetime="1793949944">06. 11. 2026</time>
+            <div class="project-actions"><button type="button" class="read-more" aria-expanded="false" aria-label="Celý zápis projektu Hra ze skupiny S2/1" aria-controls="project-result-1 project-next-1" hidden>Celý zápis ↓</button></div>
+          </div>
+          <div class="project-work"><span class="detail-label">Další krok</span>
+            <p id="project-next-1" class="project-next">naučit se v blenderu</p>
+          </div>
+        </article></div><p id="no-filter-results" class="empty-state" role="status" hidden>Pro tento výběr tu není žádný projekt.</p>
   </section>
   <section class="ministry-section" aria-labelledby="ministry-heading"><span class="section-label">Naše společná stavba</span><div class="ministry-heading"><h2 id="ministry-heading">Ministerstvo roste s námi.</h2><p>Každý projekt má vlastní tempo. Společně budujeme zázemí, které nám pomůže dál.</p></div>
     <div class="ministry"><div class="campus-panel"><div class="construction-heading"><span class="section-label">Další společný cíl</span><strong>Společné testování</strong><p>Se třemi dostupnými ukázkami už si máme co navzájem vyzkoušet.</p></div>
@@ -136,7 +148,7 @@ h1{font-size:64px;font-weight:650}h2{font-size:27px;font-weight:600}h3{font-size
           <details id="stage-4" open>
             <summary><span class="institution-number">04</span><span class="stage-name"><strong>Herní fondy</strong><span class="institution-status">Ve výstavbě</span></span><span class="stage-toggle" aria-hidden="true">+</span></summary>
             <div class="institution-body"><p class="institution-benefit">Sestavíte společné herní portfolio z více projektů a budete se učit rozhodovat jako tým.</p>
-              <ul class="goals" aria-label="Společný postup"><li class="goal "><div><span id="goal-4-0">Otevřená burza</span><strong>Ještě ne</strong></div></li><li class="goal met"><div><span id="goal-4-1">Aktivní týmy</span><strong>19 <span>/ 12</span></strong></div><progress value="12" max="12" aria-labelledby="goal-4-1"></progress></li></ul>
+              <ul class="goals" aria-label="Společný postup"><li class="goal "><div><span id="goal-4-0">Otevřená burza</span><strong>Ještě ne</strong></div></li><li class="goal met"><div><span id="goal-4-1">Aktivní týmy</span><strong>20 <span>/ 12</span></strong></div><progress value="12" max="12" aria-labelledby="goal-4-1"></progress></li></ul>
               <p class="institution-why">Nejdřív musí fungovat burza a být z čeho vybírat.</p>
               
               <p class="stage-tip">Tuhle etapu připravíme, až bude potřeba. Teď stačí pokračovat ve vlastní práci.</p>
@@ -148,8 +160,9 @@ h1{font-size:64px;font-weight:650}h2{font-size:27px;font-weight:600}h3{font-size
 <li><time datetime="22. 10. 2026">22. 10. 2026</time><p>První tým si založil projekt.</p></li>
 <li><time datetime="23. 10. 2026">23. 10. 2026</time><p>V ministerstvu staví už pět týmů.</p></li>
 <li><time datetime="23. 10. 2026">23. 10. 2026</time><p>První žádost o pomoc byla vyřešena.</p></li>
-<li><time datetime="23. 10. 2026">23. 10. 2026</time><p>V ministerstvu staví deset týmů.</p></li></ul></section>
-</main><footer class="site-footer"><div class="wrap footer-inner"><strong>Ministerstvo peněz / SPŠ a VOŠ Kladno</strong><span>Aktualizováno: <time datetime="2026-11-05T18:23:26Z">05. 11. 2026 · 19:23 CET</time></span></div></footer>
+<li><time datetime="23. 10. 2026">23. 10. 2026</time><p>V ministerstvu staví deset týmů.</p></li>
+<li><time datetime="06. 11. 2026">06. 11. 2026</time><p>První veřejná ukázka: Hra ze skupiny S2/1.</p></li></ul></section>
+</main><footer class="site-footer"><div class="wrap footer-inner"><strong>Ministerstvo peněz / SPŠ a VOŠ Kladno</strong><span>Aktualizováno: <time datetime="2026-11-06T07:28:24Z">06. 11. 2026 · 08:28 CET</time></span></div></footer>
 <script>
 (() => {
   document.documentElement.classList.add('js');
